@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.pet.rgbstriparduino.communication.ArduinoSerial;
+
 /**
  * 
  * Main Class to perform all the dirty work. This will get current snapshot of
@@ -30,13 +32,7 @@ public class RGBScreen {
 
 	public static final String BLUE = "B";
 
-	public static final int SLEEP_DURATION = 500;
-	
-	private String port;
-	
-	private int timeout;
-	
-	private int dataRate;
+	public static final int SLEEP_DURATION = 100;
 	
 	private int prevRed;
 	
@@ -44,6 +40,8 @@ public class RGBScreen {
 	
 	private int prevBlue;
 
+	private ArduinoSerial arduinoSerial;
+	
 	/**
 	 * Main constructor for the RGB Screen
 	 * 
@@ -58,9 +56,8 @@ public class RGBScreen {
 	 *            Data rate use to connect to serial (eg : 9600)
 	 */
 	public RGBScreen(String port, int timeout, int dataRate) {
-		this.port = port;
-		this.timeout = timeout;
-		this.dataRate = dataRate;
+		arduinoSerial = new ArduinoSerial(port, timeout, dataRate);
+		arduinoSerial.open();
 	}
 	
 	/**
@@ -117,12 +114,12 @@ public class RGBScreen {
 		int red = colourHex[0];
 		int green = colourHex[1];
 		int blue = colourHex[2];
-		prevRed = red;
-		prevGreen = green;
-		prevBlue = blue;
 		if(red == prevRed && green == prevGreen && blue == prevBlue) {
 			return;
 		}
+		prevRed = red;
+		prevGreen = green;
+		prevBlue = blue;
 		String redCmd = getSerialCommand(RED, red);
 		String greenCmd = getSerialCommand(GREEN, green);
 		String blueCmd = getSerialCommand(BLUE, blue);
@@ -167,7 +164,7 @@ public class RGBScreen {
 	 *            Command in string (eg : R=12, G=44)
 	 */
 	private final void sendToArduino(String s) {
-		// TODO : To be implement sending command to serial
+		arduinoSerial.write(s);
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package org.pet.rgbstripardiono;
+package org.pet.rgbstriparduino;
 
 import java.awt.AWTException;
 import java.awt.Rectangle;
